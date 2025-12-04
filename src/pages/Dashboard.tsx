@@ -178,13 +178,13 @@ export default function Dashboard() {
           <p className="text-purple-200 text-lg">
             {isGuest ? 'Play up to 3 challenges per day as a guest' : 'Ready for today\'s challenge?'}
           </p>
-          {!isGuest && dailyChallenge && (
-            <div className="my-16 flex justify-center">
+          {dailyChallenge && (
+            <div className="my-20 flex justify-center">
               <Link
                 to={`/challenge/${dailyChallenge.id}`}
-                className="bg-yellow-500 hover:bg-yellow-600 text-purple-900 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center space-x-2"
+                className="bg-yellow-500 hover:bg-yellow-600 text-purple-900 px-10 py-5 rounded-lg font-semibold text-xl transition-colors inline-flex items-center space-x-2"
               >
-                <Play className="h-6 w-6" />
+                <Play className="h-7 w-7" />
                 <span>Start Challenge</span>
               </Link>
             </div>
