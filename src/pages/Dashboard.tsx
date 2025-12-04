@@ -41,6 +41,10 @@ export default function Dashboard() {
     checkAuthStatus()
   }, [])
 
+  useEffect(() => {
+    fetchDailyChallenge()
+  }, [isGuest])
+
   const checkAuthStatus = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     setIsGuest(!user)
@@ -56,17 +60,33 @@ export default function Dashboard() {
 
   const fetchDailyChallenge = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const guest = !user
       const today = new Date().toISOString().split('T')[0]
-      const { data, error } = await supabase
-        .from('challenges')
-        .select('*')
-        .eq('active_date', today)
-        .eq('is_active', true)
-        .single()
-
-      if (!error && data) {
-        setDailyChallenge(data)
-        return
+      if (guest) {
+        const { data: pool } = await supabase
+          .from('challenges')
+          .select('*')
+          .eq('is_active', true)
+          .eq('is_premium', false)
+          .ilike('title', 'Sample%')
+          .limit(20)
+        if (pool && pool.length > 0) {
+          const pick = pool[Math.floor(Math.random() * pool.length)]
+          setDailyChallenge(pick)
+          return
+        }
+      } else {
+        const { data, error } = await supabase
+          .from('challenges')
+          .select('*')
+          .eq('active_date', today)
+          .eq('is_active', true)
+          .single()
+        if (!error && data) {
+          setDailyChallenge(data)
+          return
+        }
       }
 
       // Fallback: get the most recent active non-premium challenge

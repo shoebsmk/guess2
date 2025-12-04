@@ -12,3 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: linear-gradient(to bottom right, #581c87, #4c1d95, #312e81);
+}
+
+#root {
+  min-height: 100%;
+}

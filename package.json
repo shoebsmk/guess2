@@ -16,7 +16,8 @@
     "list:users": "tsx scripts/list-users.ts",
     "check:challenge": "tsx scripts/check-challenge-data.ts",
     "seed:questions": "tsx scripts/seed-questions-for-today.ts",
-    "create:login-user": "tsx scripts/create-login-user.ts"
+    "create:login-user": "tsx scripts/create-login-user.ts",
+    "seed:samples": "tsx scripts/seed-sample-challenges.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
