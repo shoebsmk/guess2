@@ -47,9 +47,13 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState<'overview' | 'achievements' | 'history' | 'subscription'>('overview')
 
   useEffect(() => {
-    fetchUserProfile()
-    fetchUserStats()
-    fetchAchievements()
+    const init = async () => {
+      await fetchUserProfile()
+      await fetchUserStats()
+      await fetchAchievements()
+      setLoading(false)
+    }
+    init()
   }, [])
 
   const fetchUserProfile = async () => {
@@ -62,8 +66,24 @@ export default function Profile() {
           .eq('id', authUser.id)
           .single()
 
-        if (error) throw error
-        setUser(data)
+        if (error) {
+          const payload = {
+            id: authUser.id,
+            email: authUser.email,
+            username: (authUser.email || '').split('@')[0],
+            is_premium: false,
+            avatar_url: null
+          }
+          await supabase.from('users').upsert(payload, { onConflict: 'id' })
+          const { data: created } = await supabase
+            .from('users')
+            .select('id, username, email, created_at, is_premium, avatar_url')
+            .eq('id', authUser.id)
+            .single()
+          setUser(created)
+        } else {
+          setUser(data)
+        }
       }
     } catch (error) {
       console.error('Error fetching user profile:', error)
@@ -86,7 +106,7 @@ export default function Profile() {
         // Get user rank
         const { count, error: rankError } = await supabase
           .from('users')
-          .select('*', { count: 'exact', head: true })
+          .select('id', { count: 'exact' })
           .gt('total_points', userData?.total_points || 0)
 
         if (rankError) throw rankError
@@ -122,8 +142,8 @@ export default function Profile() {
           .from('user_achievements')
           .select(`
             achievement_id,
-            unlocked_at,
-            achievements(title, description, icon, points_required)
+            earned_at,
+            achievements(name, description, badge_url, points_required)
           `)
           .eq('user_id', authUser.id)
 
@@ -131,12 +151,12 @@ export default function Profile() {
 
         const formattedAchievements = data.map((item: any) => ({
           id: item.achievement_id,
-          title: item.achievements.title,
+          title: item.achievements.name,
           description: item.achievements.description,
-          icon: item.achievements.icon,
+          icon: item.achievements.badge_url,
           points_required: item.achievements.points_required,
           is_unlocked: true,
-          unlocked_at: item.unlocked_at
+          unlocked_at: item.earned_at
         }))
 
         setAchievements(formattedAchievements)
@@ -183,7 +203,7 @@ export default function Profile() {
         }
       ])
     } finally {
-      setLoading(false)
+      // loading is finalized after init()
     }
   }
 

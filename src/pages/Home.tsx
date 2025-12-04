@@ -31,19 +31,18 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-20 text-center">
         <h1 className="text-6xl font-bold text-white mb-6">
-          Test Your Knowledge with
-          <span className="block text-yellow-400">Daily Trivia Challenges</span>
+          Play Daily Trivia
+          <span className="block text-yellow-400">Quick challenges. Real points.</span>
         </h1>
         <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-          Join thousands of trivia enthusiasts in daily challenges, compete on leaderboards, 
-          earn achievements, and build your streak in the ultimate trivia experience.
+          Compete, earn, and build your streak.
         </p>
         <div className="flex justify-center space-x-4">
           <Link 
             to="/dashboard" 
             className="bg-yellow-500 hover:bg-yellow-600 text-purple-900 px-8 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105"
           >
-            Start Playing Now
+            Play
           </Link>
           <Link 
             to="/auth/signup" 
@@ -65,9 +64,7 @@ export default function Home() {
               <Clock className="h-8 w-8 text-purple-900" />
             </div>
             <h3 className="text-xl font-bold text-white mb-4">Daily Challenges</h3>
-            <p className="text-purple-100">
-              Fresh trivia questions every day to keep your mind sharp and engaged
-            </p>
+            <p className="text-purple-100">Fresh questions every day.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center hover:bg-white/20 transition-all">
@@ -75,9 +72,7 @@ export default function Home() {
               <Target className="h-8 w-8 text-purple-900" />
             </div>
             <h3 className="text-xl font-bold text-white mb-4">Leaderboards</h3>
-            <p className="text-purple-100">
-              Compete with players worldwide and climb the rankings with your trivia skills
-            </p>
+            <p className="text-purple-100">Climb the global rankings.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center hover:bg-white/20 transition-all">
@@ -85,39 +80,31 @@ export default function Home() {
               <Star className="h-8 w-8 text-purple-900" />
             </div>
             <h3 className="text-xl font-bold text-white mb-4">Achievements</h3>
-            <p className="text-purple-100">
-              Unlock badges and rewards as you progress through challenges
-            </p>
+            <p className="text-purple-100">Unlock badges as you play.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center hover:bg-white/20 transition-all">
             <div className="bg-yellow-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
               <Zap className="h-8 w-8 text-purple-900" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Streak Tracking</h3>
-            <p className="text-purple-100">
-              Build daily streaks and earn bonus points for consistent play
-            </p>
+            <h3 className="text-xl font-bold text-white mb-4">Streaks</h3>
+            <p className="text-purple-100">Play daily, earn bonuses.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center hover:bg-white/20 transition-all">
             <div className="bg-yellow-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trophy className="h-8 w-8 text-purple-900" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Premium Content</h3>
-            <p className="text-purple-100">
-              Access exclusive challenges and bonus rewards with premium membership
-            </p>
+            <h3 className="text-xl font-bold text-white mb-4">Premium</h3>
+            <p className="text-purple-100">Exclusive challenges and rewards.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center hover:bg-white/20 transition-all">
             <div className="bg-yellow-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
               <Crown className="h-8 w-8 text-purple-900" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Loyalty Points</h3>
-            <p className="text-purple-100">
-              Earn points for every challenge completed and redeem them for rewards
-            </p>
+            <h3 className="text-xl font-bold text-white mb-4">Points</h3>
+            <p className="text-purple-100">Earn more as you play.</p>
           </div>
         </div>
       </section>
@@ -125,22 +112,27 @@ export default function Home() {
       {/* CTA Section */}
       <section className="container mx-auto px-6 py-20 text-center">
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Test Your Knowledge?
-          </h2>
-          <p className="text-purple-100 mb-8 text-lg">
-            Join thousands of players who are already enjoying daily trivia challenges
-          </p>
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to Play?</h2>
+          <p className="text-purple-100 mb-8 text-lg">Jump into today’s challenge.</p>
           <Link 
             to="/dashboard" 
             className="bg-yellow-500 hover:bg-yellow-600 text-purple-900 px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 inline-block"
           >
             Play Now - It's Free!
           </Link>
-          <p className="text-purple-200 mt-4 text-sm">
-            No credit card required • Play up to 3 challenges per day as a guest
-          </p>
+          <p className="text-purple-200 mt-4 text-sm">No signup needed for guests.</p>
         </div>
+      </section>
+
+      <section className="container mx-auto px-6 text-center pb-6">
+        <a
+          href="https://shoebsmk.github.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-2xl font-semibold hover:text-yellow-400 transition-colors"
+        >
+          Designed by Shoeb Khan
+        </a>
       </section>
 
       {/* Footer */}

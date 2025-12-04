@@ -143,10 +143,10 @@ export default function Dashboard() {
       {/* Navigation */}
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-90">
             <Trophy className="h-8 w-8 text-yellow-400" />
             <span className="text-2xl font-bold text-white">Guess2</span>
-          </div>
+          </Link>
           <div className="flex items-center space-x-6">
             <Link to="/leaderboard" className="text-white hover:text-purple-200 transition-colors">
               Leaderboard
@@ -178,6 +178,17 @@ export default function Dashboard() {
           <p className="text-purple-200 text-lg">
             {isGuest ? 'Play up to 3 challenges per day as a guest' : 'Ready for today\'s challenge?'}
           </p>
+          {!isGuest && dailyChallenge && (
+            <div className="my-16 flex justify-center">
+              <Link
+                to={`/challenge/${dailyChallenge.id}`}
+                className="bg-yellow-500 hover:bg-yellow-600 text-purple-900 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center space-x-2"
+              >
+                <Play className="h-6 w-6" />
+                <span>Start Challenge</span>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}

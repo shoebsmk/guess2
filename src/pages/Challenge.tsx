@@ -135,24 +135,46 @@ export default function Challenge() {
         const correctAnswers = userAnswers.filter(a => a.isCorrect).length
         const streakMultiplier = 1.0 // Could be enhanced with actual streak logic
 
-        // Create user challenge record
-        const { data: userChallenge, error: userChallengeError } = await supabase
+        const { data: existingUC } = await supabase
           .from('user_challenges')
-          .insert([
-            {
-              user_id: user.id,
-              challenge_id: id,
+          .select('id, score, completed_at')
+          .eq('user_id', user.id)
+          .eq('challenge_id', id)
+          .maybeSingle()
+
+        let userChallenge
+        if (existingUC?.id) {
+          const { data: updated } = await supabase
+            .from('user_challenges')
+            .update({
               score,
               completion_time: totalTime,
               streak_multiplier: streakMultiplier,
               correct_answers: correctAnswers,
               total_questions: questions.length
-            }
-          ])
-          .select()
-          .single()
-
-        if (userChallengeError) throw userChallengeError
+            })
+            .eq('id', existingUC.id)
+            .select()
+            .single()
+          userChallenge = updated
+        } else {
+          const { data: inserted } = await supabase
+            .from('user_challenges')
+            .insert([
+              {
+                user_id: user.id,
+                challenge_id: id,
+                score,
+                completion_time: totalTime,
+                streak_multiplier: streakMultiplier,
+                correct_answers: correctAnswers,
+                total_questions: questions.length
+              }
+            ])
+            .select()
+            .single()
+          userChallenge = inserted
+        }
 
         // Store individual answers
         const userAnswersData = userAnswers.map(answer => ({
@@ -163,15 +185,72 @@ export default function Challenge() {
           time_spent: answer.timeSpent
         }))
 
+        if (userChallenge?.id) {
+          await supabase.from('user_answers').delete().eq('user_challenge_id', userChallenge.id)
+        }
         await supabase.from('user_answers').insert(userAnswersData)
 
-        // Update user stats
-        await supabase.rpc('update_user_stats', {
-          user_id: user.id,
-          new_score: score,
-          correct_answers: correctAnswers,
-          total_questions: questions.length
-        })
+        const { data: stats } = await supabase
+          .from('users')
+          .select('total_points, games_played, average_score, current_streak, best_streak')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        const baseGames = stats?.games_played || 0
+        const basePoints = stats?.total_points || 0
+        const baseAvg = stats?.average_score || 0
+        const replacedAttempt = !!existingUC?.id
+        const prevScore = existingUC?.score || 0
+        const gamesPlayed = replacedAttempt ? baseGames : baseGames + 1
+        const totalPoints = basePoints + (replacedAttempt ? (score - prevScore) : score)
+        const avgNumerator = baseAvg * baseGames + (replacedAttempt ? (score - prevScore) : score)
+        const avgDenominator = gamesPlayed === 0 ? 1 : gamesPlayed
+        const avgScore = Number((avgNumerator / avgDenominator).toFixed(2))
+
+        const todayStr = new Date().toISOString().split('T')[0]
+        const isTodayChallenge = challenge?.active_date === todayStr
+
+        const { data: prev } = await supabase
+          .from('user_challenges')
+          .select('id, completed_at, challenge:challenges(active_date)')
+          .eq('user_id', user.id)
+          .neq('challenge_id', id)
+          .order('completed_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+
+        let newStreak = stats?.current_streak || 0
+        if (isTodayChallenge && !replacedAttempt) {
+          const prevDateStr = (prev as any)?.challenge?.active_date as string | undefined
+          if (prevDateStr) {
+            const prevDate = new Date(prevDateStr)
+            const todayDate = new Date(todayStr)
+            const diffDays = Math.round((todayDate.getTime() - prevDate.getTime()) / 86400000)
+            newStreak = diffDays === 1 ? newStreak + 1 : 1
+          } else {
+            newStreak = 1
+          }
+        }
+        const newBest = Math.max(stats?.best_streak || 0, newStreak)
+
+        const payload = {
+          id: user.id,
+          email: user.email,
+          username: (user.email || '').split('@')[0],
+          password_hash: 'supabase_auth',
+          total_points: totalPoints,
+          games_played: gamesPlayed,
+          average_score: avgScore,
+          current_streak: newStreak,
+          best_streak: newBest,
+          updated_at: new Date().toISOString()
+        }
+
+        if (stats) {
+          await supabase.from('users').update(payload).eq('id', user.id)
+        } else {
+          await supabase.from('users').upsert(payload, { onConflict: 'id' })
+        }
       }
 
       // Navigate to results after a short delay
