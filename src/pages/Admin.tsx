@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Trophy, Users, Gamepad2, Star, Plus, Edit, Trash2, TrendingUp, Clock, Award } from 'lucide-react'
 import { supabase } from '@/supabase/client'
+import { apiUrl } from '@/utils/api'
 
 interface Challenge {
   id: string
@@ -93,7 +94,7 @@ export default function Admin() {
 
   const fetchChallenges = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/admin/challenges')
+      const response = await fetch(apiUrl('/api/admin/challenges'))
       if (response.ok) {
         const data = await response.json()
         setChallenges(data.data)
@@ -130,7 +131,7 @@ export default function Admin() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/admin/stats')
+      const response = await fetch(apiUrl('/api/admin/stats'))
       if (response.ok) {
         const data = await response.json()
         setStats(data.data)
@@ -152,7 +153,7 @@ export default function Admin() {
 
   const fetchRecentActivity = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/admin/activity')
+      const response = await fetch(apiUrl('/api/admin/activity'))
       if (response.ok) {
         const data = await response.json()
         setRecentActivity(data.data)
@@ -182,7 +183,7 @@ export default function Admin() {
   const handleDeleteChallenge = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this challenge?')) {
       try {
-        const response = await fetch(`http://localhost:3001/api/admin/challenges/${id}`, {
+        const response = await fetch(apiUrl(`/api/admin/challenges/${id}`), {
           method: 'DELETE',
         })
         if (response.ok) {
