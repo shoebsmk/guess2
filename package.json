@@ -14,6 +14,8 @@
     "test:auth": "tsx scripts/test-auth.ts",
     "test:rls": "tsx scripts/test-auth-rls.ts",
     "list:users": "tsx scripts/list-users.ts",
+    "check:challenge": "tsx scripts/check-challenge-data.ts",
+    "seed:questions": "tsx scripts/seed-questions-for-today.ts",
     "create:login-user": "tsx scripts/create-login-user.ts"
   },
   "dependencies": {
